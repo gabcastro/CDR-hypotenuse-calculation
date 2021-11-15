@@ -1,6 +1,7 @@
 import os
 import sys
 import cv2
+import math
 import numpy as np
 from PIL import Image
 from matplotlib import pyplot as plt
@@ -9,6 +10,9 @@ IMG_PATH = 'images\\'
 ILM_LAYER_PATH = 'layer-ILM\\'
 RPE_LAYER_PATH = 'layer-RPE\\'
 MERGED_PATH = 'merged\\'
+
+def hipotenuse_calc(adjacent, opposite):
+    return math.hypot(opposite, adjacent)
 
 def ctd(merged_image, coord, direction):
     # direction = 1 go to the left
@@ -41,14 +45,16 @@ def merged_image(img_name, lcoord, rcoord, dcoord, ucoord):
     merged_image = cv2.imread(IMG_PATH + MERGED_PATH + img_name)
     merged_image = cv2.resize(merged_image, (320, 320))
 
+    # draw a line bt RPE points
     merged_image = cv2.line(
         merged_image, 
-        (lcoord[1], lcoord[0]), 
-        (rcoord[1] + int(merged_image.shape[0]/2), rcoord[0]), 
+        (lcoord[1], lcoord[0]), # 1° x, y
+        (rcoord[1] + int(merged_image.shape[0]/2), rcoord[0]), # 2° x, y
         (0, 0, 255), 
         thickness=2
     )
 
+    # draw a line bt RPE line and deep point find on ilm layer
     merged_image = cv2.line(
         merged_image, 
         (dcoord[1], dcoord[0]), 
@@ -57,6 +63,8 @@ def merged_image(img_name, lcoord, rcoord, dcoord, ucoord):
         thickness=2
     )
 
+    # find points bt RPE and closer part of ilm layer
+    # consider as cup to disc 
     ctd_left = ctd(merged_image, ucoord, 1)
     ctd_right = ctd(merged_image, ucoord, 2)
 
@@ -75,7 +83,39 @@ def merged_image(img_name, lcoord, rcoord, dcoord, ucoord):
         thickness=2
     )
 
-    return merged_image
+    print('--> CTD:: left coordinate: \t\t\t', ctd_left)
+    print('--> CTD:: right coordinate: \t\t\t', ctd_right)
+
+    adjacent_value = ctd_right[1] - ctd_left[1]
+    opposite_value = dcoord[0] - ucoord[0]
+
+    print('--> Adjacent value:: \t\t\t\t', adjacent_value)
+    print('--> Opposite value:: \t\t\t\t', opposite_value)
+
+    coord_label_adjacent = [ucoord[0] - 10, ucoord[1]] # y, x
+    coord_label_opposite = [dcoord[0] - int(opposite_value/2), ucoord[1] + 10] # y, x
+
+    cv2.putText(
+        merged_image, 
+        str(adjacent_value), 
+        (coord_label_adjacent[1], coord_label_adjacent[0]), # x, y
+        cv2.FONT_HERSHEY_SIMPLEX, 
+        0.4, 
+        (36,255,12), 
+        1
+    )
+
+    cv2.putText(
+        merged_image, 
+        str(opposite_value), 
+        (coord_label_opposite[1], coord_label_opposite[0]), # x, y
+        cv2.FONT_HERSHEY_SIMPLEX, 
+        0.4, 
+        (36,255,12), 
+        1
+    )
+
+    return merged_image, adjacent_value, opposite_value
 
 
 def find_coord_bt_ilm_rpe(deeper_coord, rpe_line):
@@ -161,6 +201,9 @@ def ilm_coordinates(actual_img, rpe_line):
 if __name__ == "__main__":
     imgs_ILM = os.listdir(IMG_PATH + ILM_LAYER_PATH)
     
+    img = imgs_ILM[1]
+    imgs_ILM = [img]
+
     for img in imgs_ILM:
         rpe_coord_left, rpe_coord_right, rpe_line = rpe_coordinates(img)
 
@@ -172,7 +215,11 @@ if __name__ == "__main__":
         print('--> ILM LAYER:: deeper coordinate: \t\t', ilm_deeper_coord)
         print('--> ILM LAYER:: cross coordinate: \t\t', ilm_cross_coord)
 
-        mimage = merged_image(img, rpe_coord_left, rpe_coord_right, ilm_deeper_coord, ilm_cross_coord)
+        mimage, adjacent_value, opposite_value = merged_image(img, rpe_coord_left, rpe_coord_right, ilm_deeper_coord, ilm_cross_coord)
+
+        hipotenuse = hipotenuse_calc(adjacent_value, opposite_value)
+
+        print('--> Hipotenuse value:: \t\t\t\t', hipotenuse)
 
         cv2.imshow('', mimage)
         cv2.waitKey(0)  
