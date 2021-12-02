@@ -43,7 +43,7 @@ def merged_image(img_name, lcoord, rcoord, dcoord, ucoord):
     background.save(IMG_PATH + MERGED_PATH + img_name)
 
     merged_image = cv2.imread(IMG_PATH + MERGED_PATH + img_name)
-    merged_image = cv2.resize(merged_image, (320, 320))
+    #merged_image = cv2.resize(merged_image, (320, 320))
 
     # draw a line bt RPE points
     merged_image = cv2.line(
@@ -81,7 +81,10 @@ def merged_image(img_name, lcoord, rcoord, dcoord, ucoord):
         (ctd_right[1], ctd_right[0] + 50),
         (255, 0, 0),
         thickness=2
-    )
+    ) 
+
+    cv2.imshow('', merged_image)
+    cv2.waitKey(0)
 
     print('--> CTD:: left coordinate: \t\t\t', ctd_left)
     print('--> CTD:: right coordinate: \t\t\t', ctd_right)
@@ -166,7 +169,7 @@ def find_best_coordinate(half_img):
 def rpe_coordinates(actual_img):
     rpe_img_original = cv2.imread(IMG_PATH + RPE_LAYER_PATH + actual_img)
     rpe_img_edited = cv2.cvtColor(rpe_img_original, cv2.COLOR_BGR2GRAY)
-    rpe_img_edited = cv2.resize(rpe_img_edited, (320, 320))
+    #rpe_img_edited = cv2.resize(rpe_img_edited, (320, 320))
 
     # get from 0 - 160 points (x axis)
     left_coord = find_best_coordinate(rpe_img_edited[0:rpe_img_edited.shape[0], 0:int(rpe_img_edited.shape[0]/2)])
@@ -175,7 +178,7 @@ def rpe_coordinates(actual_img):
     right_coord = find_best_coordinate(rpe_img_edited[0:rpe_img_edited.shape[0], (int(rpe_img_edited.shape[0]/2) + 1):rpe_img_edited.shape[0]])
     
     rpe_line = cv2.line(
-        cv2.resize(rpe_img_original, (320, 320)), 
+        rpe_img_original,#cv2.resize(rpe_img_original, (320, 320)), 
         (left_coord[1], left_coord[0]), 
         (right_coord[1] + int(rpe_img_edited.shape[0]/2), right_coord[0]), 
         (0, 0, 255), 
@@ -188,7 +191,7 @@ def rpe_coordinates(actual_img):
 def ilm_coordinates(actual_img, rpe_line):
     ilm_img_original = cv2.imread(IMG_PATH + ILM_LAYER_PATH + actual_img)
     ilm_img_edited = cv2.cvtColor(ilm_img_original, cv2.COLOR_BGR2GRAY)
-    ilm_img_edited = cv2.resize(ilm_img_edited, (320, 320))
+    #ilm_img_edited = cv2.resize(ilm_img_edited, (320, 320))
 
     # get the edge deeper from ilm layer
     deeper_coord = find_deeper_coordinate(ilm_img_edited)
@@ -201,7 +204,7 @@ def ilm_coordinates(actual_img, rpe_line):
 if __name__ == "__main__":
     imgs_ILM = os.listdir(IMG_PATH + ILM_LAYER_PATH)
     
-    img = imgs_ILM[1]
+    img = imgs_ILM[2]
     imgs_ILM = [img]
 
     for img in imgs_ILM:
@@ -219,6 +222,19 @@ if __name__ == "__main__":
 
         hipotenuse = hipotenuse_calc(adjacent_value, opposite_value)
 
+        print('--> Hipotenuse value:: \t\t\t\t', hipotenuse)
+
+        know_distance = 200.00 
+        horizontal_scale = (16.00/know_distance) # pixels per micron value
+        vertical_scale = (50.00/know_distance) # pixels per micron value
+
+        adjacent_value = adjacent_value/horizontal_scale
+        opposite_value = opposite_value/vertical_scale
+        hipotenuse = hipotenuse_calc(adjacent_value, opposite_value)
+
+        print('\n--> Values in micrometre <--')
+        print('--> Adjacent value:: \t\t\t\t', adjacent_value)
+        print('--> Opposite value:: \t\t\t\t', opposite_value)
         print('--> Hipotenuse value:: \t\t\t\t', hipotenuse)
 
         cv2.imshow('', mimage)
