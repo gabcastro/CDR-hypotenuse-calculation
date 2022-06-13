@@ -21,10 +21,9 @@ class Coordinates():
         Keyword arguments:
         img -- A numpy array of an image in grayscale
         """
-
         # i.e.: an image of 600x600 is divide in two equal parts
         # where the left part will contain pixels from 0 - 300 (x axis)
-        # so, the right part will contain 301 - 600 
+        # so, the right part will contain 300 - 600 
 
         halfAxisX = int(img.shape[1]/2)
 
@@ -33,10 +32,16 @@ class Coordinates():
         self.rightEdgeCoord = self.findCoord(img[0:img.shape[0], halfAxisX:img.shape[1]])
         self.rightEdgeCoord[1] = halfAxisX + self.rightEdgeCoord[1]
 
+    def findThirdPart(self, img):
+        """In charge of (1) search for coords between leftEdge and rightEdge, 
+        but inside of cup area, (2) search for coords relate with a third part from what was founded in (1).
+        Will return a (x, y) to (1), and a (x, y) to (2).
+        """
+        pass
+
     def findCoord(self, img):
         """Generic function that can be used in more than one case, to find a coord.
         """
-
         bestCoordinate = list([0, 0])
 
         # shape[0]: hight (y) | shape[1]: width (x)

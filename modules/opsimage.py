@@ -6,6 +6,13 @@ import coordinates
 class OpsImage():
 
     def __init__(self, layerl1, layerl2, mergedPath, dirTemp):
+        """Constructor
+
+        Keyword arguments:
+        layerl1 -- a list with path/img from layer 1
+        layerl2 -- a list with path/img from layer 2
+        mergedPath -- a list with path/img in the folder 'merged'
+        """ 
         self.layerl1 = layerl1
         self.layerl2 = layerl2
         self.mergedPath = mergedPath
@@ -28,8 +35,10 @@ class OpsImage():
             actImg = cv2.imread(img)
 
             i = self.drawLine(actImg, lCoords[idx], rCoords[idx], (0, 0, 255))
+
             cv2.imshow('', i)
             cv2.waitKey(0)
+            
 
 
     def drawLine(self, img, start_point, end_point, color):
