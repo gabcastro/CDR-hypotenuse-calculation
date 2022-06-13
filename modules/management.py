@@ -9,13 +9,14 @@ class Management():
     fullPathImgsL2 = []
     fullPathMerged = []
 
-    def __init__(self, layerDir : dict, mergeDir : str):
+    def __init__(self, layerDir : dict, mergeDir : str, tempDir : str):
         self.layersDir = layerDir
         self.mergedDir = mergeDir
+        self.tempDir = tempDir
 
     def run(self):
         self.listImages()
-        self.checkIfExistDir()
+        self.checkIfExistDir(dirSelected=self.mergedDir)
         self.joinPathImgs()
         self.createFullMergePath()
 
@@ -29,7 +30,7 @@ class Management():
         for acDir in self.layersDir:
             self.layersImgs.append(os.listdir(acDir))
 
-    def checkIfExistDir(self):
+    def checkIfExistDir(self, dirSelected):
         """Check if exist or not a folder
         
         Conditions:

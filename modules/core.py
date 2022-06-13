@@ -18,27 +18,42 @@ def main():
     
     layerDir = (configMap.dirs["dirlayer1"], configMap.dirs["dirlayer2"])
     mergedDir = configMap.dirs["dirmerged"]
-    mg = management.Management(layerDir=layerDir, mergeDir=mergedDir)
+    tempDir = configMap.dirs["dirtemp"]
+    
+    mg = management.Management(
+        layerDir=layerDir, 
+        mergeDir=mergedDir,
+        tempDir=tempDir)
     mg.run()
 
-    allCoords = []
+    allInnerCoords = []
+    allLCoords = []
+    allRCoords = []
     coords = coordinates.Coordinates()    
 
-    opsImage = opsimage.OpsImage()
-    opsImage.mergeImages(mg.fullPathImgsL1, mg.fullPathImgsL2, mg.fullPathMerged)
+    opsImage = opsimage.OpsImage(
+        layerl1=mg.fullPathImgsL1, 
+        layerl2=mg.fullPathImgsL2, 
+        mergedPath=mg.fullPathMerged,
+        dirTemp=tempDir)
+
+    opsImage.mergeImages()
 
     for idx, packImgs in enumerate(mg.fullPathImgs):
         for imgActLayer in packImgs:
             actImg = cv2.imread(imgActLayer)
             grayImg = cv2.cvtColor(actImg, cv2.COLOR_BGR2GRAY)
+            
+            if (idx == 0):
+                coords.findInnerPoint(grayImg)
+                allInnerCoords.append(coords.deeperCoord)
+            else:
+                coords.findEdgePoint(grayImg)
+                allLCoords.append(coords.leftEdgeCoord)
+                allRCoords.append(coords.rightEdgeCoord)
+                
+    opsImage.addEdgePoints(allLCoords, allRCoords)
 
-    #         if (idx == 0):
-    #             coords.findInnerPoint(grayImg)
-    #             allCoords.append(coords.deeperCoord)
-    #         else:
-    #             coords.findEdgePoint(grayImg)
-    #             allCoords.append(coords.leftEdgeCoord)
-    #             allCoords.append(coords.rightEdgeCoord)
 
 if __name__ == "__main__":
     main()
