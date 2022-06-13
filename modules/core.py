@@ -35,7 +35,8 @@ def main():
         layerl1=mg.fullPathImgsL1, 
         layerl2=mg.fullPathImgsL2, 
         mergedPath=mg.fullPathMerged,
-        dirTemp=tempDir)
+        dirTemp=tempDir,
+        objCoord=coords)
 
     opsImage.mergeImages()
 

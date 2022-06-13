@@ -5,7 +5,7 @@ import coordinates
 
 class OpsImage():
 
-    def __init__(self, layerl1, layerl2, mergedPath, dirTemp):
+    def __init__(self, layerl1, layerl2, mergedPath, dirTemp, objCoord : coordinates):
         """Constructor
 
         Keyword arguments:
@@ -17,6 +17,7 @@ class OpsImage():
         self.layerl2 = layerl2
         self.mergedPath = mergedPath
         self.dirTemp = dirTemp
+        self.coord = objCoord
 
     def mergeImages(self):
         """Merge the layer 1 and 2 in an unique img and save in a folder
@@ -36,8 +37,10 @@ class OpsImage():
 
             i = self.drawLine(actImg, lCoords[idx], rCoords[idx], (0, 0, 255))
 
-            cv2.imshow('', i)
-            cv2.waitKey(0)
+            self.coord.findThirdPart(i, lCoords[idx], rCoords[idx])
+            
+            # cv2.imshow('', i)
+            # cv2.waitKey(0)
             
 
 
