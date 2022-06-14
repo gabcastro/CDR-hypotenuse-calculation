@@ -56,17 +56,30 @@ class Coordinates():
         lPart = img[yUp:yDown, xIniPos:(halfXPos + xIniPos)]
         rPart = img[yUp:yDown, (xEndPos - halfXPos):xEndPos]
 
-        # print(f'{lPart.shape} lpart || {rPart.shape} rpart')
+        lCross = self.findCrossCoord(lPart, True)
+        lCross[1] = xIniPos + lCross[1]
+        lCross[0] = yUp + lCross[0]
+        rCross = self.findCrossCoord(rPart, False)
+        rCross[1] = xIniPos + halfXPos + rCross[1]
+        rCross[0] = yUp + rCross[0]        
 
-        self.findCrossCoord(lPart)
+        thirdPart = (rCross[1] - lCross[1])/3
 
-    def findCrossCoord(self, img):
+        return (lCross, rCross, thirdPart)
+
+    def findCrossCoord(self, img, reversed) -> list:
         """Search the point where cross line from 'edges' with layer1
         """
         bestCoordinate = list([0, 0])
+        lWidth = []
+        
+        if reversed:
+            lWidth = range(img.shape[1])[::-1]
+        else:
+            lWidth = range(img.shape[1])
         
         for pHeight in range(img.shape[0]):
-            for pWidth in reversed(range(img.shape[1])):
+            for pWidth in lWidth:
                 selectedPixel = img[pHeight, pWidth]
                 if (selectedPixel[0] in range(245, 255) and 
                     selectedPixel[1] in range(245, 255) and 
@@ -79,35 +92,10 @@ class Coordinates():
                         print(f'pixel vermelho: pH{pNext}, pW:{pWidth}, downP:{downPixel}')
                         bestCoordinate = list([pNext, pWidth])
                     break
-            
-        # print(bestCoordinate)
 
-                # previousPixel = img[pHeight-1, pWidth-1]
-                # if ((selectedPixel[2] == 255) and 
-                #     (previousPixel[0] in range(240, 255) and
-                #      previousPixel[1] in range(240, 255) and
-                #      previousPixel[2] in range(240, 255))
-                # ):
-                #     print(f'achou na pos. pH:{pHeight} e pW:{pWidth}')
-                #     bestCoordinate = list([pHeight+1, pWidth+1])
-                #     stop = 1
-                # elif ((bestCoordinate[0] < pHeight) and (stop == 1)):
-                #     break
-                # elif ((selectedPixel[0] in range(0, 230) and
-                #         selectedPixel[1] in range(0, 230) and
-                #         selectedPixel[2] in range(0, 230)) and
-                #     (bestCoordinate[0] < pHeight) and (stop == 1)):
-                #     break
-            
+        return bestCoordinate
 
-        # print(bestCoordinate)
-
-        # xx = cv2.circle(img, [55, 53], 2, (0, 50, 105), 2)
-
-        # cv2.imshow('', xx)
-        # cv2.waitKey(0)
-
-    def findCoord(self, img):
+    def findCoord(self, img) -> list:
         """Generic function that can be used in more than one case, to find a coord.
         """
         bestCoordinate = list([0, 0])

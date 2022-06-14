@@ -37,10 +37,13 @@ class OpsImage():
 
             i = self.drawLine(actImg, lCoords[idx], rCoords[idx], (0, 0, 255))
 
-            self.coord.findThirdPart(i, lCoords[idx], rCoords[idx])
-            
-            # cv2.imshow('', i)
-            # cv2.waitKey(0)
+            (lCross, rCross, thirdPart) = self.coord.findThirdPart(i, lCoords[idx], rCoords[idx])
+
+            i = self.drawDot(i, (lCross[1], lCross[0]), 5, (0, 200, 0))
+            i = self.drawDot(i, (rCross[1], rCross[0]), 5, (0, 200, 0))
+
+            cv2.imshow('', i)
+            cv2.waitKey(0)
             
 
 
@@ -54,3 +57,11 @@ class OpsImage():
             thickness=2
         )
         
+    def drawDot(self, img, centerCoordinates, radius, color):
+        return cv2.circle(
+            img,
+            centerCoordinates,
+            radius,
+            color,
+            -1
+        )
