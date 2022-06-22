@@ -37,15 +37,17 @@ class OpsImage():
 
             i = self.drawLine(actImg, lCoords[idx], rCoords[idx], (0, 0, 255))
 
-            (lCross, rCross, thirdPart) = self.coord.findThirdPart(i, lCoords[idx], rCoords[idx])
+            (lCross, rCross) = self.coord.findDistancesCupRegion(i, lCoords[idx], rCoords[idx])
 
             i = self.drawDot(i, (lCross[1], lCross[0]), 5, (0, 200, 0))
             i = self.drawDot(i, (rCross[1], rCross[0]), 5, (0, 200, 0))
 
+            thirdPart = self.coord.findMiddlePart(i, lCross, rCross)
+
+            i = self.drawDot(i, (thirdPart[1], thirdPart[0]), 5, (230, 0, 0))
+
             cv2.imshow('', i)
             cv2.waitKey(0)
-            
-
 
     def drawLine(self, img, start_point, end_point, color):
         # cv2.line(image, start_point, end_point, color, thickness)

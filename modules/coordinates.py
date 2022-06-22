@@ -34,10 +34,18 @@ class Coordinates():
         self.rightEdgeCoord = self.findCoord(img[0:img.shape[0], halfAxisX:img.shape[1]])
         self.rightEdgeCoord[1] = halfAxisX + self.rightEdgeCoord[1]
 
-    def findThirdPart(self, img, lcoord, rcoord):
-        """In charge of (1) search for coords between leftEdge and rightEdge, 
-        but inside of cup area, (2) search for coords relate with a third part from what was founded in (1).
-        Will return a (x, y) to (1), and a (x, y) to (2).
+    def findDistancesCupRegion(self, img, lcoord, rcoord):
+        """In charge of: 
+            (1) search for coords between leftEdge and rightEdge, but on the limit of cup area
+
+        Keyword arguments:
+        img -- An image to read
+        lcoord -- points from left side of the image
+        rcoord -- points from right side of the image    
+
+        Returns: 
+        Will be return:
+            - limits between cup area: two positions (x, y)
         """
         # compute some coords to cut image near from the region where the red line pass
         # x calcs
@@ -57,15 +65,61 @@ class Coordinates():
         rPart = img[yUp:yDown, (xEndPos - halfXPos):xEndPos]
 
         lCross = self.findCrossCoord(lPart, True)
-        lCross[1] = xIniPos + lCross[1]
+        # compute the right coords on the total image
+        lCross[1] = xIniPos + lCross[1] 
         lCross[0] = yUp + lCross[0]
+
         rCross = self.findCrossCoord(rPart, False)
+        # compute the right coords on the total image
         rCross[1] = xIniPos + halfXPos + rCross[1]
         rCross[0] = yUp + rCross[0]        
 
-        thirdPart = (rCross[1] - lCross[1])/3
+        return (lCross, rCross)
 
-        return (lCross, rCross, thirdPart)
+    def findMiddlePart(self, img, lcoord, rcoord):
+        """In charge of: 
+            (1) calculate the coords related with a third part from what was founded using method findDistancesCupRegion
+
+        Keyword arguments:
+        img -- An image to read
+        lcoord -- points from left side of the image from cup region
+        rcoord -- points from right side of the image from cup region
+
+        Returns: 
+        Will be return:
+            - a coord (x, y) where is the third part
+        """
+        bestCoordinate = list([0, 0])
+        
+        lenEqualPartsX = (rcoord[1] - lcoord[1])/3
+        
+        x = int(lcoord[1] + lenEqualPartsX + (lenEqualPartsX/2))
+        
+        y = int((lcoord[0] + rcoord[0])/2)
+        yUp = y - 50
+        yDown = y + 50
+
+        imgRegion = img[yUp:yDown, x:x+1]
+
+        for pHeight in range(imgRegion.shape[0]):
+            for pWidth in range(imgRegion.shape[1]):
+                selectedPixel = imgRegion[pHeight, pWidth]
+                if (selectedPixel[0] == 0 and
+                    selectedPixel[1] == 0 and
+                    selectedPixel[2] == 255):
+                    print(pHeight)
+                    bestCoordinate = list([pHeight + 1, pWidth])
+                break
+            
+            if any(bestCoordinate):
+                break
+
+        print(bestCoordinate)
+
+        bestCoordinate[0] = yUp + bestCoordinate[0]
+        bestCoordinate[1] = x
+
+        return bestCoordinate
 
     def findCrossCoord(self, img, reversed) -> list:
         """Search the point where cross line from 'edges' with layer1
