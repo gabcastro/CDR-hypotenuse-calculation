@@ -39,16 +39,19 @@ class OpsImage():
             (2) merge found value to third part with inner coord
         """
         for idx, img in enumerate(self.mg.fullPathMerged):
+            logging.info(img)
             actImg = cv2.imread(img)
 
             i = self.drawLine(actImg, lCoords[idx], rCoords[idx], (0, 0, 255))
 
             (lCross, rCross) = self.coord.findDistancesCupRegion(i, lCoords[idx], rCoords[idx])
+            logging.info(f"\t\t* found coords (cup region)")
 
             i = self.drawDot(i, (lCross[1], lCross[0]), 5, (0, 200, 0))
             i = self.drawDot(i, (rCross[1], rCross[0]), 5, (0, 200, 0))
 
             thirdPart = self.coord.findMiddlePart(i, lCross, rCross)
+            logging.info(f"\t\t* found coords (center of third part)")
 
             i = self.drawDot(i, (thirdPart[1], thirdPart[0]), 5, (230, 0, 0))
 
@@ -56,9 +59,19 @@ class OpsImage():
 
             self.coord.adjacentSide(thirdPart, innerCoords[idx])
             self.coord.opositeSide(thirdPart, lCross, rCross)
+            logging.info(f"\t\t* compute values to adjacent and oposite sides")
 
+            self.saveFinalImage(i, img)
+            
             cv2.imshow('', i)
             cv2.waitKey(0)
+
+    def saveFinalImage(self, img, dirImg):
+        try:
+            outPath = dirImg.replace("MERGED", "OUT")
+            cv2.imwrite(outPath, img)
+        except:
+            logging.error("Something went wrong when trying save image")
 
     def drawLine(self, img, start_point, end_point, color):
         return cv2.line(

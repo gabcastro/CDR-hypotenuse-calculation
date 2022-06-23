@@ -1,5 +1,8 @@
-init:
+setup: requirements.txt
 	pip install -r requirements.txt
 
-test:
-	nosetests tests
+run:
+	python.exe ./module/core.py
+
+clean:
+    rm -rf __pycache__
