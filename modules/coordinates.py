@@ -1,11 +1,13 @@
 import cv2
 import math
+import logging
+import management
 
 class Coordinates():
 
-    deeperCoord = []
-    leftEdgeCoord = []
-    rightEdgeCoord = []
+    allInnerCoords = []
+    allLCoords = []
+    allRCoords = []
 
     adjacentS = 0.0
     opositeLeft = 0.0
@@ -14,8 +16,31 @@ class Coordinates():
     hypL = 0.0
     hypR = 0.0
 
-    def __init__(self):
-        pass
+    def __init__(self, mg):
+        self.mg = mg
+
+    def initialCoords(self):
+        """Find coords in deep part (ILM Layer), and external part from BMO Layer
+        """
+        logging.info("Started capture of initial coordinates...")
+        
+        totalLists = len(self.mg.fullPathImgs)
+
+        for idx, packImgs in enumerate(self.mg.fullPathImgs):
+            logging.info(f"Reading {idx + 1} of {totalLists} lists | {self.mg.layersDir[idx]}")
+            for img in packImgs:
+                actImg = cv2.imread(img)
+                grayImg = cv2.cvtColor(actImg, cv2.COLOR_BGR2GRAY)
+                
+                if (idx == 0):
+                    deepCoord = self.findInnerPoint(grayImg)
+                    self.allInnerCoords.append(deepCoord)
+                else:
+                    (leftEdgeCoord, rightEdgeCoord) = self.findEdgePoint(grayImg)
+                    self.allLCoords.append(leftEdgeCoord)
+                    self.allRCoords.append(rightEdgeCoord)
+
+        logging.info("Ended capture of initial coordinates")
 
     def findInnerPoint(self, img):
         """In charge of searching (x, y) deeper in layer 1
@@ -23,7 +48,7 @@ class Coordinates():
         Keyword arguments:
         img -- A numpy array of an image in grayscale
         """
-        self.deeperCoord = self.findCoord(img)
+        return self.findCoord(img)
 
     def findEdgePoint(self, img):
         """In charge of searching (x, y) from layer 2, at the edge of the layer
@@ -37,10 +62,12 @@ class Coordinates():
 
         halfAxisX = int(img.shape[1]/2)
 
-        self.leftEdgeCoord = self.findCoord(img[0:img.shape[0], 0:halfAxisX])
+        leftEdgeCoord = self.findCoord(img[0:img.shape[0], 0:halfAxisX])
 
-        self.rightEdgeCoord = self.findCoord(img[0:img.shape[0], halfAxisX:img.shape[1]])
-        self.rightEdgeCoord[1] = halfAxisX + self.rightEdgeCoord[1]
+        rightEdgeCoord = self.findCoord(img[0:img.shape[0], halfAxisX:img.shape[1]])
+        rightEdgeCoord[1] = halfAxisX + rightEdgeCoord[1]
+
+        return (leftEdgeCoord, rightEdgeCoord)
 
     def findDistancesCupRegion(self, img, lcoord, rcoord):
         """In charge of: 

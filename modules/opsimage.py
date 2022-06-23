@@ -1,43 +1,44 @@
 import os
 import cv2
+import logging
 import PIL.Image
+import management
 import coordinates
 
 class OpsImage():
 
-    def __init__(self, layerl1, layerl2, mergedPath, objCoord : coordinates):
-        """Constructor
-
-        Keyword arguments:
-        layerl1 -- a list with path/img from layer 1
-        layerl2 -- a list with path/img from layer 2
-        mergedPath -- a list with path/img in the folder 'merged'
-        """ 
-        self.layerl1 = layerl1
-        self.layerl2 = layerl2
-        self.mergedPath = mergedPath
+    def __init__(self, objMg, objCoord):
+        self.mg = objMg
         self.coord = objCoord
 
-    def run(self, allLCoords, allRCoords, allInnerCoords):
+    def run(self):
         self.mergeImages()
-        self.ops(allLCoords, allRCoords, allInnerCoords)
+        self.ops(self.coord.allLCoords, self.coord.allRCoords, self.coord.allInnerCoords)
 
     def mergeImages(self):
         """Merge the layer 1 and 2 in an unique img and save in a folder
         """
-        for idx, il1 in enumerate(self.layerl1):
-            background = PIL.Image.open(il1)
-            foreground = PIL.Image.open(self.layerl2[idx])
+        listL1 = self.mg.fullPathImgs[0]
+        listL2 = self.mg.fullPathImgs[1]
+
+        for idx, il1 in enumerate(listL1):
+            try:
+                background = PIL.Image.open(il1)
+                foreground = PIL.Image.open(listL2[idx])
             
-            background.paste(foreground, (0, 0), foreground)
-            background.save(self.mergedPath[idx])
+                background.paste(foreground, (0, 0), foreground)
+                background.save(self.mg.fullPathMerged[idx])
+            except:
+                logging.error("Something went wrong when trying merge L1 with L2")
+
+        logging.info("L1 - L2 merged and saved at MERGED folder")
 
     def ops(self, lCoords : list, rCoords : list, innerCoords: list):
         """For all images, will:
             (1) read all left and right points, to compute limits and third part
             (2) merge found value to third part with inner coord
         """
-        for idx, img in enumerate(self.mergedPath):
+        for idx, img in enumerate(self.mg.fullPathMerged):
             actImg = cv2.imread(img)
 
             i = self.drawLine(actImg, lCoords[idx], rCoords[idx], (0, 0, 255))

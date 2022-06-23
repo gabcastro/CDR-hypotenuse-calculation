@@ -1,4 +1,5 @@
 import configparser
+import logging
 
 class ConfigMap():
     sectionIni = "Paths"
@@ -7,6 +8,7 @@ class ConfigMap():
         self.configParser = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
         self.configParser.read("../common/configs.ini")
         self.dirs = {}
+        logging.info('File of configs readed')
 
     @property
     def dirs(self):

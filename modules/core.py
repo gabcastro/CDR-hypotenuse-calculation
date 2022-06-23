@@ -11,46 +11,29 @@ import configs
 
 def main():
 
-    logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
-    logging.info('Starting the script...')
+    logging.basicConfig(
+        filename='../log/trace.log', 
+        format='%(levelname)s: %(asctime)s - %(message)s', 
+        datefmt='%m/%d/%Y %I:%M:%S %p', 
+        level=logging.INFO, 
+        filemode='w'
+    )
+    logging.info("")
+    logging.info("Starting the script...")
 
     configMap = configs.ConfigMap()
     
-    layerDir = (configMap.dirs["dirlayer1"], configMap.dirs["dirlayer2"])
-    mergedDir = configMap.dirs["dirmerged"]
-    tempDir = configMap.dirs["dirtemp"]
-    
-    mg = management.Management(
-        layerDir=layerDir, 
-        mergeDir=mergedDir,
-        tempDir=tempDir)
+    mg = management.Management(configMap.dirs)
     mg.run()
 
-    allInnerCoords = []
-    allLCoords = []
-    allRCoords = []
-    coords = coordinates.Coordinates()    
-
-    for idx, packImgs in enumerate(mg.fullPathImgs):
-        for imgActLayer in packImgs:
-            actImg = cv2.imread(imgActLayer)
-            grayImg = cv2.cvtColor(actImg, cv2.COLOR_BGR2GRAY)
-            
-            if (idx == 0):
-                coords.findInnerPoint(grayImg)
-                allInnerCoords.append(coords.deeperCoord)
-            else:
-                coords.findEdgePoint(grayImg)
-                allLCoords.append(coords.leftEdgeCoord)
-                allRCoords.append(coords.rightEdgeCoord)
+    coords = coordinates.Coordinates(mg)    
+    coords.initialCoords()
                 
-    opsImage = opsimage.OpsImage(
-        layerl1=mg.fullPathImgsL1, 
-        layerl2=mg.fullPathImgsL2, 
-        mergedPath=mg.fullPathMerged,
-        objCoord=coords)
+    opsImage = opsimage.OpsImage(mg, coords)
+    opsImage.run()
 
-    opsImage.run(allLCoords, allRCoords, allInnerCoords)
+    logging.info("Ended the script...")
+    logging.info("")
 
 if __name__ == "__main__":
     main()
