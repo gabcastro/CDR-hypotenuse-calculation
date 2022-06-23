@@ -63,8 +63,8 @@ class OpsImage():
 
             self.saveFinalImage(i, img)
             
-            cv2.imshow('', i)
-            cv2.waitKey(0)
+            # cv2.imshow('', i)
+            # cv2.waitKey(0)
 
     def saveFinalImage(self, img, dirImg):
         try:

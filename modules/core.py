@@ -1,3 +1,4 @@
+import os
 import sys
 import cv2
 import logging
@@ -20,9 +21,9 @@ def main():
     )
     logging.info("")
     logging.info("Starting the script...")
-
-    configMap = configs.ConfigMap()
     
+    configMap = configs.ConfigMap()
+
     mg = management.Management(configMap.dirs)
     mg.run()
 

@@ -1,23 +1,35 @@
-INFO: 06/23/2022 05:47:43 PM - 
-INFO: 06/23/2022 05:47:43 PM - Starting the script...
-INFO: 06/23/2022 05:47:43 PM - File of configs readed
-INFO: 06/23/2022 05:47:43 PM - Read and build lists with paths and files
-INFO: 06/23/2022 05:47:43 PM - Started capture of initial coordinates...
-INFO: 06/23/2022 05:47:43 PM - Reading 1 of 2 lists | ../image/L1
-INFO: 06/23/2022 05:47:52 PM - Reading 2 of 2 lists | ../image/L2
-INFO: 06/23/2022 05:48:01 PM - Ended capture of initial coordinates
-INFO: 06/23/2022 05:48:01 PM - L1 - L2 merged and saved at MERGED folder
-INFO: 06/23/2022 05:48:01 PM - ../image/MERGED/HVOC_IA_001.jpg
-INFO: 06/23/2022 05:48:01 PM - 		* found coords (cup region)
-INFO: 06/23/2022 05:48:01 PM - 		* found coords (center of third part)
-INFO: 06/23/2022 05:48:01 PM - 		* compute values to adjacent and oposite sides
-INFO: 06/23/2022 05:48:06 PM - ../image/MERGED/HVOC_IA_002.jpg
-INFO: 06/23/2022 05:48:07 PM - 		* found coords (cup region)
-INFO: 06/23/2022 05:48:07 PM - 		* found coords (center of third part)
-INFO: 06/23/2022 05:48:07 PM - 		* compute values to adjacent and oposite sides
-INFO: 06/23/2022 05:48:10 PM - ../image/MERGED/HVOC_IA_003.jpg
-INFO: 06/23/2022 05:48:10 PM - 		* found coords (cup region)
-INFO: 06/23/2022 05:48:10 PM - 		* found coords (center of third part)
-INFO: 06/23/2022 05:48:10 PM - 		* compute values to adjacent and oposite sides
-INFO: 06/23/2022 05:48:28 PM - Ended the script...
-INFO: 06/23/2022 05:48:28 PM - 
+INFO: 06/23/2022 06:49:44 PM - 
+INFO: 06/23/2022 06:49:44 PM - Starting the script...
+INFO: 06/23/2022 06:49:44 PM - File of configs readed
+INFO: 06/23/2022 06:49:44 PM - Read and build lists with paths and files
+INFO: 06/23/2022 06:49:44 PM - Started capture of initial coordinates...
+INFO: 06/23/2022 06:49:44 PM - Reading 1 of 2 lists | ../image/L1
+INFO: 06/23/2022 06:50:02 PM - Reading 2 of 2 lists | ../image/L2
+INFO: 06/23/2022 06:50:21 PM - Ended capture of initial coordinates
+INFO: 06/23/2022 06:50:22 PM - L1 - L2 merged and saved at MERGED folder
+INFO: 06/23/2022 06:50:22 PM - ../image/MERGED/HVOC_IA_001.jpg
+INFO: 06/23/2022 06:50:22 PM - 		* found coords (cup region)
+INFO: 06/23/2022 06:50:22 PM - 		* found coords (center of third part)
+INFO: 06/23/2022 06:50:22 PM - 		* compute values to adjacent and oposite sides
+INFO: 06/23/2022 06:50:22 PM - ../image/MERGED/HVOC_IA_002.jpg
+INFO: 06/23/2022 06:50:22 PM - 		* found coords (cup region)
+INFO: 06/23/2022 06:50:22 PM - 		* found coords (center of third part)
+INFO: 06/23/2022 06:50:22 PM - 		* compute values to adjacent and oposite sides
+INFO: 06/23/2022 06:50:22 PM - ../image/MERGED/HVOC_IA_003.jpg
+INFO: 06/23/2022 06:50:22 PM - 		* found coords (cup region)
+INFO: 06/23/2022 06:50:22 PM - 		* found coords (center of third part)
+INFO: 06/23/2022 06:50:22 PM - 		* compute values to adjacent and oposite sides
+INFO: 06/23/2022 06:50:22 PM - ../image/MERGED/HVOC_IA_004.jpg
+INFO: 06/23/2022 06:50:23 PM - 		* found coords (cup region)
+INFO: 06/23/2022 06:50:23 PM - 		* found coords (center of third part)
+INFO: 06/23/2022 06:50:23 PM - 		* compute values to adjacent and oposite sides
+INFO: 06/23/2022 06:50:23 PM - ../image/MERGED/HVOC_IA_005.jpg
+INFO: 06/23/2022 06:50:23 PM - 		* found coords (cup region)
+INFO: 06/23/2022 06:50:23 PM - 		* found coords (center of third part)
+INFO: 06/23/2022 06:50:23 PM - 		* compute values to adjacent and oposite sides
+INFO: 06/23/2022 06:50:23 PM - ../image/MERGED/HVOC_IA_006.jpg
+INFO: 06/23/2022 06:50:23 PM - 		* found coords (cup region)
+INFO: 06/23/2022 06:50:23 PM - 		* found coords (center of third part)
+INFO: 06/23/2022 06:50:23 PM - 		* compute values to adjacent and oposite sides
+INFO: 06/23/2022 06:50:23 PM - Ended the script...
+INFO: 06/23/2022 06:50:23 PM - 
