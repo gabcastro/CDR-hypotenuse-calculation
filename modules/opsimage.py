@@ -5,7 +5,7 @@ import coordinates
 
 class OpsImage():
 
-    def __init__(self, layerl1, layerl2, mergedPath, dirTemp, objCoord : coordinates):
+    def __init__(self, layerl1, layerl2, mergedPath, objCoord : coordinates):
         """Constructor
 
         Keyword arguments:
@@ -16,8 +16,11 @@ class OpsImage():
         self.layerl1 = layerl1
         self.layerl2 = layerl2
         self.mergedPath = mergedPath
-        self.dirTemp = dirTemp
         self.coord = objCoord
+
+    def run(self, allLCoords, allRCoords, allInnerCoords):
+        self.mergeImages()
+        self.ops(allLCoords, allRCoords, allInnerCoords)
 
     def mergeImages(self):
         """Merge the layer 1 and 2 in an unique img and save in a folder
@@ -29,8 +32,10 @@ class OpsImage():
             background.paste(foreground, (0, 0), foreground)
             background.save(self.mergedPath[idx])
 
-    def addEdgePoints(self, lCoords : list, rCoords : list):
-        """In charge of draw a line using "edge" coords
+    def ops(self, lCoords : list, rCoords : list, innerCoords: list):
+        """For all images, will:
+            (1) read all left and right points, to compute limits and third part
+            (2) merge found value to third part with inner coord
         """
         for idx, img in enumerate(self.mergedPath):
             actImg = cv2.imread(img)
@@ -46,11 +51,15 @@ class OpsImage():
 
             i = self.drawDot(i, (thirdPart[1], thirdPart[0]), 5, (230, 0, 0))
 
+            i = self.drawLine(i, thirdPart, innerCoords[idx], (230, 0, 0))
+
+            self.coord.adjacentSide(thirdPart, innerCoords[idx])
+            self.coord.opositeSide(thirdPart, lCross, rCross)
+
             cv2.imshow('', i)
             cv2.waitKey(0)
 
     def drawLine(self, img, start_point, end_point, color):
-        # cv2.line(image, start_point, end_point, color, thickness)
         return cv2.line(
             img,
             (start_point[1], start_point[0]), 

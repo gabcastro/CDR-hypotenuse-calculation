@@ -31,15 +31,6 @@ def main():
     allRCoords = []
     coords = coordinates.Coordinates()    
 
-    opsImage = opsimage.OpsImage(
-        layerl1=mg.fullPathImgsL1, 
-        layerl2=mg.fullPathImgsL2, 
-        mergedPath=mg.fullPathMerged,
-        dirTemp=tempDir,
-        objCoord=coords)
-
-    opsImage.mergeImages()
-
     for idx, packImgs in enumerate(mg.fullPathImgs):
         for imgActLayer in packImgs:
             actImg = cv2.imread(imgActLayer)
@@ -53,8 +44,13 @@ def main():
                 allLCoords.append(coords.leftEdgeCoord)
                 allRCoords.append(coords.rightEdgeCoord)
                 
-    opsImage.addEdgePoints(allLCoords, allRCoords)
+    opsImage = opsimage.OpsImage(
+        layerl1=mg.fullPathImgsL1, 
+        layerl2=mg.fullPathImgsL2, 
+        mergedPath=mg.fullPathMerged,
+        objCoord=coords)
 
+    opsImage.run(allLCoords, allRCoords, allInnerCoords)
 
 if __name__ == "__main__":
     main()

@@ -1,10 +1,18 @@
 import cv2
+import math
 
 class Coordinates():
 
     deeperCoord = []
     leftEdgeCoord = []
     rightEdgeCoord = []
+
+    adjacentS = 0.0
+    opositeLeft = 0.0
+    opositeRight = 0.0
+
+    hypL = 0.0
+    hypR = 0.0
 
     def __init__(self):
         pass
@@ -58,9 +66,6 @@ class Coordinates():
         yUp = y - 50
         yDown = y + 50
 
-        # print(f'xIniP={xIniPos}, xEndP={xEndPos}, lenXP={lenXPos}, halfX={halfXPos}')
-        # print(f'y={y}, yUp={yUp}, yDown={yDown}')
-        
         lPart = img[yUp:yDown, xIniPos:(halfXPos + xIniPos)]
         rPart = img[yUp:yDown, (xEndPos - halfXPos):xEndPos]
 
@@ -107,19 +112,33 @@ class Coordinates():
                 if (selectedPixel[0] == 0 and
                     selectedPixel[1] == 0 and
                     selectedPixel[2] == 255):
-                    print(pHeight)
                     bestCoordinate = list([pHeight + 1, pWidth])
                 break
             
             if any(bestCoordinate):
                 break
 
-        print(bestCoordinate)
-
         bestCoordinate[0] = yUp + bestCoordinate[0]
         bestCoordinate[1] = x
 
         return bestCoordinate
+
+    def adjacentSide(self, thirdPart, innerCoord):
+        """Calculate the adjacent side of a triangle
+        """
+        self.adjacentS = innerCoord[0] - thirdPart[0]
+
+    def opositeSide(self, thirdPart, lCross, rCross):
+        """Calculate the oposite side of a triangle
+        """
+        self.opositeLeft = thirdPart[1] - lCross[1]
+        self.opositeRight = thirdPart[1] - rCross[1]
+
+    def hypotenuse(self):
+        """Calculate the hypotenuse from two sides
+        """ 
+        self.hypL = math.sqrt(self.adjacentS*self.adjacentS + self.opositeLeft*self.opositeLeft)
+        self.hypR = math.sqrt(self.adjacentS*self.adjacentS + self.opositeRight*self.opositeRight)
 
     def findCrossCoord(self, img, reversed) -> list:
         """Search the point where cross line from 'edges' with layer1
@@ -143,7 +162,6 @@ class Coordinates():
                     if (downPixel[0] == 0 and
                         downPixel[1] == 0 and
                         downPixel[2] == 255):
-                        print(f'pixel vermelho: pH{pNext}, pW:{pWidth}, downP:{downPixel}')
                         bestCoordinate = list([pNext, pWidth])
                     break
 
