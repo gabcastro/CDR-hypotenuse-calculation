@@ -59,7 +59,12 @@ class OpsImage():
 
             self.coord.adjacentSide(thirdPart, innerCoords[idx])
             self.coord.opositeSide(thirdPart, lCross, rCross)
-            logging.info(f"\t\t* compute values to adjacent and oposite sides")
+            self.coord.hypotenuse()
+            
+            logging.info(f"\t\t* compute values to adjacent and oposite sides, where:")
+            logging.info(f"\t\t*    adjacent side [vertical]: {self.coord.adjacentS}")
+            logging.info(f"\t\t*    oposite side: [hor. left] {self.coord.opositeLeft} [hor. right] {self.coord.opositeRight}")
+            logging.info(f"\t\t*    hypotenuse: [to left] {self.coord.hypL} [to right] {self.coord.hypR}")
 
             self.saveFinalImage(i, img)
             
